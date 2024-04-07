@@ -6,6 +6,7 @@ from django.urls import reverse
 from rest_framework import status
 from django.core.files.uploadedfile import SimpleUploadedFile
 
+
 class VideoAPITestCase(APITestCase):
     # 테스트 코드가 실행되기 전 동작하는 함수
     # - 데이터를 만들어줘야 한다. (1) 유저 생성/로그인 -> (2) 비디오 생성
@@ -15,7 +16,7 @@ class VideoAPITestCase(APITestCase):
             email='seaJ@gmail.com',
             password='password1231'
         )
-        self.client.login(emai='seaJ@gmail.com', password='password1231')
+        self.client.login(email='seaJ@gmail.com', password='password1231')
 
         self.video = Video.objects.create(
             title='test video',
@@ -29,14 +30,15 @@ class VideoAPITestCase(APITestCase):
         url = reverse('video-list')
         res = self.client.get(url) # 전체 비디오 조회 데이터
 
-        self.asserEqual(res.status, status.HTTP_200_OK)
-        self.asserEqual(res.headers['Content-Type'], 'application/json')
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertEqual(res.headers['Content-Type'], 'application/json')
         self.assertTrue(len(res.data) > 0)
 
         # title 컬럼이 응답 데이터에 잘 들어가 있는지 확인
         for video in res.data:
             self.assertIn('title', video)
 
+# 비디오 생성
     def test_video_list_post(self):
         url = reverse('video-list') # api/v1/video
 
@@ -44,24 +46,55 @@ class VideoAPITestCase(APITestCase):
             'title':'test video2',
             'link':'http://test.com',
             'category':'test category',
+            'thumbnail':'http://test.com',
             'video_file': SimpleUploadedFile('file.mp4', b'file_content', 'video/mp4'),
-            'user':self.user.pk
+            'user': self.user.pk
         }
 
-        res = self.clieent.post(url, data)
+        res = self.client.post(url, data)
+        
+        # pdb.set_trace()
 
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
-        self.assertEquarl(res.date['title'], 'test video2')
+        self.assertEqual(res.data['title'], 'test video2')
 
 
     # 특정 비디오 조회
     def test_video_detail_get(self):
-        pass
+        url = reverse('video-detail', kwargs={'pk':self.video.pk})
+        # url: api/v1/video/1
+
+        res = self.client.get(url) # [GET] api/v1/video/1
+
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
     
     # 특정 비디오 업데이트하는 코드
     def test_video_detail_put(self):
-        pass
+        url = reverse('video-detail', kwargs={'pk':self.video.pk})
+        
+        data = {
+            'title':'updated video',
+            'link':'http://test.com',
+            'category':'test category',
+            'thumbnail':'http://test.com',
+            'video_file': SimpleUploadedFile('file.mp4', b'file_content', 'video/mp4'),
+            'user': self.user.pk
+        }
+        
+        res = self.client.put(url, data) # 서버에 요청
+
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertEqual(res.data['title'], 'updated video')
+
     
     # 특정 비디오 삭제
     def test_video_detail_delete(self):
-        pass
+        url = reverse('video-detail', kwargs={'pk':self.video.pk})
+        res = self.client.delete(url) # [DELETE] api/v1/video/{pk} -> REST API
+        self.assertEqual(res.status_code, status.HTTP_204_NO_CONTENT)
+        
+        res = self.client.get(url) # [GET] api/v1/video/{pk}
+        self.assertEqual(res.status_code, status.HTTP_404_NOT_FOUND)
+
+
+        

@@ -19,3 +19,6 @@ class Video(CommonModel):
     # User:Video
         # => User : Video, Video, Video, Video, Video => O
         # => Video : User, User, User (유튜버 3명이 찍은 영상) => X
+    
+
+    # make
