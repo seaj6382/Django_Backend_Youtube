@@ -97,4 +97,4 @@ class VideoAPITestCase(APITestCase):
         self.assertEqual(res.status_code, status.HTTP_404_NOT_FOUND)
 
 
-        
+# docker-compose run --rm app sh -c 'python manage.py test videos'
