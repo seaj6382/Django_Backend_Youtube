@@ -41,15 +41,25 @@ DJANGO_SYSTEM_APPS = [
 ]
 
 CUSTOM_USER_APPS = [
+    'daphne',
     'users.apps.UsersConfig', # Config: label 변경할 일이 많다.
     'videos.apps.VideosConfig',
     'comments.apps.CommentsConfig',
     'subscriptions.apps.SubscriptionsConfig',
+    'reactions.apps.ReactionsConfig',
     'rest_framework',
-    'drf_spectacular'
+    'drf_spectacular',
+    'channels',
+    'chat.apps.ChatConfig'
                     ]
 
 INSTALLED_APPS = CUSTOM_USER_APPS + DJANGO_SYSTEM_APPS
+
+# Channels를 사용하기 위한 설정
+ASGI_APPLICATION = 'app.route.application' # Socket(비동기 처리)
+# => FAST API (비동기) + (동기)
+
+WSGI_APPLICATION = 'app.wsgi.application' # HTTP Base - REST API(동기 처리)
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -79,7 +89,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'app.wsgi.application'
+
 
 
 # Database
@@ -144,4 +154,10 @@ AUTH_USER_MODEL = 'users.User'
 
 REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema'
+}
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND' : 'channels.layers.InMemoryChannelLayer'
+    }
 }

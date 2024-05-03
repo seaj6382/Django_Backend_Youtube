@@ -13,5 +13,5 @@ class Command(BaseCommand):
                 is_db_connected = connections['default']
             except:
                 self.stdout.write('Retrying DB connection')
-                time.slepp(1)
+                time.sleep(1)
             self.stdout.write(self.style.SUCCESS('Congratue! PostgreSQL DB Connection Success!!'))

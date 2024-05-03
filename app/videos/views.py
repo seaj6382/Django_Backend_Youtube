@@ -53,7 +53,7 @@ class VideoDetail(APIView):
         
         serializer = VideoDetailSerializer(video_obj) # Object -> Json
         return Response(serializer.data)
-    
+     
     def put(self, request, pk):
         video_obj = Video.objects.get(pk=pk) # db에서 불러온 데이터
         user_data = request.data # 유저가 보낸 데이터

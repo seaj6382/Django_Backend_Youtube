@@ -98,7 +98,12 @@ docker-compose run --rm app sh -c 'python manage.py createsuperuser'
 # 서버실행
 
 docker-compose up
+docker-compose up --build
 
 # 서버종료
 
 docker-compose down
+
+# migration
+docker-compose run --rm app sh -c 'python manage.py makemigrations'
+docker-compose run --rm app sh -c 'python manage.py migrate'

@@ -15,7 +15,6 @@ class Video(CommonModel):
 
     user = models.ForeignKey(User, on_delete=models.CASCADE) # 운영의 문제
     
-
     # User:Video
         # => User : Video, Video, Video, Video, Video => O
         # => Video : User, User, User (유튜버 3명이 찍은 영상) => X
